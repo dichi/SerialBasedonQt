@@ -16,7 +16,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QSerialPort *SerialPort;
+    QSerialPort SerialPortN[20];
+    QSerialPort *SerialPort=SerialPortN;
     QTimer *fTimer;    //定时器
 
 private slots:

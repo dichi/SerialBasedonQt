@@ -8,6 +8,7 @@
 bool gsendhex = true;
 bool greceivehex = true;
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -22,10 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(SerialPort, SIGNAL(readyRead()), this, SLOT(receivetime_Slot()));
     connect(fTimer,SIGNAL(timeout()),this,SLOT(serialPortReadyRead_Slot()));
 
-    QStringList serialNamePort;
+     QStringList serialNamePort;
     foreach (const QSerialPortInfo &info , QSerialPortInfo::availablePorts())
     {
-        serialNamePort << info.portName();
+  //      serialNamePort << info.portName();
+        serialNamePort << (info.portName()+"("+ info.description()+")");
  //       serialNamePort <<info.description() ;
     }
     ui->serialcb ->addItems(serialNamePort);
@@ -81,6 +83,10 @@ void MainWindow::on_openport_clicked()
     QSerialPort::StopBits stopBits;//定义停止位
     QSerialPort::Parity   patity;  //定义校验位
 
+    int index;
+    QStringList serialNamePort;
+ //   QString serialNamePort;
+
     //波特率赋值
     if(ui->baudrate->currentText() == "1200")
     {
@@ -103,6 +109,11 @@ void MainWindow::on_openport_clicked()
     {
         baudRate = QSerialPort::Baud115200;
     }
+    else
+    {
+        baudRate = QSerialPort::Baud9600;
+
+    }
     //数据位赋值
     if(ui->datalength->currentText() == "5")
     {
@@ -117,6 +128,10 @@ void MainWindow::on_openport_clicked()
     {
         dataBits = QSerialPort::Data8;
     }
+    else
+    {
+         dataBits = QSerialPort::Data8;
+    }
     //停止位赋值
     if(ui->stopbit->currentText() == "1")
     {
@@ -127,6 +142,10 @@ void MainWindow::on_openport_clicked()
     }else if(ui->stopbit->currentText() == "2")
     {
         stopBits = QSerialPort::TwoStop;
+    }
+    else
+    {
+        stopBits = QSerialPort::OneStop;
     }
     //校验位赋值
     if(ui->checkmethod ->currentText() == "None")
@@ -140,8 +159,16 @@ void MainWindow::on_openport_clicked()
     {
         patity = QSerialPort::OddParity;
     }
+    else
+    {
+       patity = QSerialPort::NoParity;
+    }
 
-    SerialPort->setPortName(ui->serialcb->currentText()  );   //设置串口号
+    serialNamePort<<ui->serialcb->currentText();
+    index = serialNamePort[0].indexOf('(');
+ //   serialNamePort << serialNamePort.mid(0,index).join("");
+    SerialPort->setPortName(serialNamePort[0].mid(0,index));
+  //  SerialPort->setPortName(ui->serialcb->currentText()  );   //设置串口号 serialNamePort
     SerialPort->setBaudRate(baudRate);                //设置波特率
     SerialPort->setDataBits(dataBits);                //设置数据位
     SerialPort->setStopBits(stopBits);                //设置停止位
