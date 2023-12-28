@@ -65,7 +65,7 @@ void MainWindow::serialPortReadyRead_Slot()
     {
 
         data =SerialPort->readAll();
-        buff = QString(data.toHex());
+        buff = QString(data.toHex(' '));
 
         ui->reczone->appendPlainText(buff);
     }
