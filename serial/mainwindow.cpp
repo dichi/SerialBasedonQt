@@ -44,7 +44,7 @@ void MainWindow::receivetime_Slot()
 {
 
 //    fTimer->stop();         //启动前停止定时器，避免前面有未关闭的定时器
-    fTimer->start (10) ;    //设置定时周期，单位：毫秒
+    fTimer->start (5) ;     //设置定时周期，单位：毫秒
 }
 
 
@@ -71,7 +71,6 @@ void MainWindow::serialPortReadyRead_Slot()
     }
     else
     {
-
         buff = QString(SerialPort->readAll());
         ui->reczone->appendPlainText(buff);
     }
