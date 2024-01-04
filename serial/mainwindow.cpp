@@ -18,10 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
     fTimer=new QTimer(this);  //新建定时器类
 
     //手动关联槽函数
-//    connect(SerialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_Slot()));
+    connect(SerialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_Slot()));
  //   connect(fTimer,SIGNAL(timeout()),this,SLOT(receivetime_Slot()));
-    connect(SerialPort, SIGNAL(readyRead()), this, SLOT(receivetime_Slot()));
-    connect(fTimer,SIGNAL(timeout()),this,SLOT(serialPortReadyRead_Slot()));
+ //   connect(SerialPort, SIGNAL(readyRead()), this, SLOT(receivetime_Slot()));
+ //   connect(fTimer,SIGNAL(timeout()),this,SLOT(serialPortReadyRead_Slot()));
 
      QStringList serialNamePort;
     foreach (const QSerialPortInfo &info , QSerialPortInfo::availablePorts())
@@ -52,7 +52,7 @@ void MainWindow::serialPortReadyRead_Slot()
 {
     QString buff;
     QByteArray data;
-    fTimer->stop();
+//    fTimer->stop();
 //    if(SerialPort->readBufferSize()>0)
  /*   {
         data =SerialPort->readAll();
