@@ -3,12 +3,12 @@
 #include <QMessageBox>
 #include <QSerialPortInfo>
 #include <QDateTime>
-//#include <QRegExp>
+#include <QRegularExpressionValidator>
 
 //全局变量
 
-bool gsendhex = true;
-bool greceivehex = true;
+bool gsendhex = false;
+bool greceivehex = false;
 int  galreadyreceive = 0;
 
 
@@ -222,12 +222,8 @@ void MainWindow::on_senddata_clicked()
 
     if(gsendhex ==true)
     {
-        //定义一个正则表达式，用于匹配十六进制数
-        QRegularExpression hexRegex("^[0-9A-Fa-f]+$");
-  //      QRegularExpressionValidator * validator = new QRegularExpression (hexRegex); // 将匹配模式设为验证对象
-  //      ui->sendzone->validator(hexRegex);
-  //      SerialPort->write(ui->sendzone->text());
-          SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
+
+        SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
     }
     else
     {
@@ -251,12 +247,11 @@ void MainWindow::on_outputform_stateChanged(int arg1)
 {
     if(arg1 == Qt::Checked)
     {
-        greceivehex = false;
+        greceivehex = true;
     }
     else
     {
-        greceivehex = true;
-
+        greceivehex = false;
     }
 }
 
@@ -265,11 +260,21 @@ void MainWindow::on_outputform_2_stateChanged(int arg1)
 {
     if(arg1 == Qt::Checked)
     {
-        gsendhex = false;
+        //定义一个正则表达式，用于匹配十六进制数
+        QRegularExpression hexRegex("^[0-9A-Fa-f ]+$");
+        QValidator *validator = new QRegularExpressionValidator(hexRegex, this);
+        //      QRegularExpressionValidator * validator = new QRegularExpression (hexRegex); // 将匹配模式设为验证对象
+        //      ui->sendzone->validator(hexRegex);
+        //      SerialPort->write(ui->sendzone->text());
+        ui->sendzone->setValidator(validator); //限制十六进制
+        gsendhex = true;
+
     }
     else
     {
-        gsendhex = true;
+
+        ui->sendzone->setValidator(NULL); //无限制
+        gsendhex = false;
 
     }
 }

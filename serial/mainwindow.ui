@@ -306,7 +306,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>接收模式 ASCII</string>
+     <string>十六进制接收模式</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="outputform_2">
@@ -314,12 +314,12 @@
      <rect>
       <x>520</x>
       <y>260</y>
-      <width>111</width>
+      <width>121</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>输出模式 ASCII</string>
+     <string>十六进制输出模式</string>
     </property>
    </widget>
   </widget>
