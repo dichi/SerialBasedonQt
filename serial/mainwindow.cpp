@@ -2,11 +2,14 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QSerialPortInfo>
+#include <QDateTime>
+//#include <QRegExp>
 
 //全局变量
 
 bool gsendhex = true;
 bool greceivehex = true;
+int  galreadyreceive = 0;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -18,10 +21,10 @@ MainWindow::MainWindow(QWidget *parent)
     fTimer=new QTimer(this);  //新建定时器类
 
     //手动关联槽函数
-    connect(SerialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_Slot()));
+ //   connect(SerialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_Slot()));
  //   connect(fTimer,SIGNAL(timeout()),this,SLOT(receivetime_Slot()));
- //   connect(SerialPort, SIGNAL(readyRead()), this, SLOT(receivetime_Slot()));
- //   connect(fTimer,SIGNAL(timeout()),this,SLOT(serialPortReadyRead_Slot()));
+    connect(SerialPort, SIGNAL(readyRead()), this, SLOT(receivetime_Slot()));
+    connect(fTimer,SIGNAL(timeout()),this,SLOT(serialPortReadyRead_Slot()));
 
      QStringList serialNamePort;
     foreach (const QSerialPortInfo &info , QSerialPortInfo::availablePorts())
@@ -44,7 +47,8 @@ void MainWindow::receivetime_Slot()
 {
 
 //    fTimer->stop();         //启动前停止定时器，避免前面有未关闭的定时器
-    fTimer->start (5) ;     //设置定时周期，单位：毫秒
+    fTimer->start (20) ;     //设置定时周期，单位：毫秒
+    galreadyreceive =SerialPort->readBufferSize(); //目前缓冲中的数据
 }
 
 
@@ -52,7 +56,24 @@ void MainWindow::serialPortReadyRead_Slot()
 {
     QString buff;
     QByteArray data;
-//    fTimer->stop();
+
+    QDateTime RecvTime ;
+    RecvTime = QDateTime::currentDateTime(); //获取当前时间
+    fTimer->stop();
+
+    int receiveNow=SerialPort->readBufferSize();
+
+    if(receiveNow ==galreadyreceive) //没有新数据
+    {
+        ;
+    }
+    else
+    {
+       fTimer->start (20) ;
+        galreadyreceive =SerialPort->readBufferSize();
+       return ;
+    }
+
 //    if(SerialPort->readBufferSize()>0)
  /*   {
         data =SerialPort->readAll();
@@ -61,6 +82,10 @@ void MainWindow::serialPortReadyRead_Slot()
         ui->reczone->appendPlainText(buff);
     }
  */
+
+
+    ui->reczone->appendPlainText("recv  "+RecvTime.toString());
+//    qDebug() << "Received data:" << data << "at" << time.toString(); //输出接收到的数据和时间信息
     if(greceivehex ==true)
     {
 
@@ -191,7 +216,26 @@ void MainWindow::on_closeport_clicked()
 
 void MainWindow::on_senddata_clicked()
 {
-    SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
+    QDateTime SendTime ;
+    SendTime = QDateTime::currentDateTime(); //获取当前时间
+    ui->reczone->appendPlainText("send  "+SendTime.toString());
+
+    if(gsendhex ==true)
+    {
+        //定义一个正则表达式，用于匹配十六进制数
+        QRegularExpression hexRegex("^[0-9A-Fa-f]+$");
+  //      QRegularExpressionValidator * validator = new QRegularExpression (hexRegex); // 将匹配模式设为验证对象
+  //      ui->sendzone->validator(hexRegex);
+  //      SerialPort->write(ui->sendzone->text());
+          SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
+    }
+    else
+    {
+        ui->reczone->appendPlainText(ui->sendzone->text().toLocal8Bit().data());
+        SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
+    }
+
+
 }
 
 
@@ -212,6 +256,20 @@ void MainWindow::on_outputform_stateChanged(int arg1)
     else
     {
         greceivehex = true;
+
+    }
+}
+
+
+void MainWindow::on_outputform_2_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        gsendhex = false;
+    }
+    else
+    {
+        gsendhex = true;
 
     }
 }
