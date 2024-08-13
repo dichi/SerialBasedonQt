@@ -23,6 +23,11 @@
       <height>221</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Source Code Pro</family>
+     </font>
+    </property>
     <property name="lineWidth">
      <number>40</number>
     </property>
@@ -320,6 +325,32 @@
     </property>
     <property name="text">
      <string>十六进制输出模式</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="IfShowRec">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>290</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>不显示接收</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="IfShowTime">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>320</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>不显示时间</string>
     </property>
    </widget>
   </widget>

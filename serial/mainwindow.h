@@ -36,6 +36,10 @@ private slots:
     void on_outputform_stateChanged(int arg1);
     void on_outputform_2_stateChanged(int arg1);
 
+    void on_IfShowRec_stateChanged(int arg1);
+
+
+    void on_IfShowTime_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

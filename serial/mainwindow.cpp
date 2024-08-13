@@ -10,6 +10,8 @@
 bool gsendhex = false;
 bool greceivehex = false;
 int  galreadyreceive = 0;
+bool gshowtime = true;
+bool gshowRec = true;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -83,8 +85,10 @@ void MainWindow::serialPortReadyRead_Slot()
     }
  */
 
-
-    ui->reczone->appendPlainText("recv  "+RecvTime.toString());
+    if(gshowtime == true)
+    {
+        ui->reczone->appendPlainText("recv  "+RecvTime.toString());
+    }
 //    qDebug() << "Received data:" << data << "at" << time.toString(); //输出接收到的数据和时间信息
     if(greceivehex ==true)
     {
@@ -217,13 +221,26 @@ void MainWindow::on_closeport_clicked()
 void MainWindow::on_senddata_clicked()
 {
     QDateTime SendTime ;
-    SendTime = QDateTime::currentDateTime(); //获取当前时间
-    ui->reczone->appendPlainText("send  "+SendTime.toString());
+    if(gshowtime == true)
+    {
+        SendTime = QDateTime::currentDateTime(); //获取当前时间
+        ui->reczone->appendPlainText("send  "+SendTime.toString());
+
+    }
+
+    QString info = ui->sendzone->text();
+    if(info.contains(" "))
+    {
+        info.replace(QString(" "),QString(""));
+    }
+
+    QByteArray sendbuf = QByteArray::fromHex(info.toLatin1());
+
 
     if(gsendhex ==true)
     {
-
-        SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
+        SerialPort->write(sendbuf);
+ //     SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
     }
     else
     {
@@ -275,6 +292,40 @@ void MainWindow::on_outputform_2_stateChanged(int arg1)
 
         ui->sendzone->setValidator(NULL); //无限制
         gsendhex = false;
+
+    }
+}
+
+
+void MainWindow::on_IfShowRec_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+
+        gshowtime = false;
+
+    }
+    else
+    {
+
+        gshowtime= true;
+
+    }
+}
+
+
+void MainWindow::on_IfShowTime_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+
+        gshowRec = false;
+
+    }
+    else
+    {
+
+        gshowRec = true;
 
     }
 }
