@@ -85,9 +85,15 @@ void MainWindow::serialPortReadyRead_Slot()
     }
  */
 
+    // 红色字体
+    QTextCharFormat fmt;// 文本格式
+    fmt.setForeground(Qt::black);
+    QTextCursor cursor =ui->reczone->textCursor();
+    cursor.mergeBlockCharFormat(fmt);
+    ui->reczone->mergeCurrentCharFormat(fmt);
     if(gshowtime == true)
     {
-        ui->reczone->appendPlainText("recv  "+RecvTime.toString());
+        ui->reczone->appendPlainText("recv  "+RecvTime.toString("yyyy-MM-dd hh:mm:ss.zzz")+"  ");
     }
 //    qDebug() << "Received data:" << data << "at" << time.toString(); //输出接收到的数据和时间信息
     if(greceivehex ==true)
@@ -96,12 +102,12 @@ void MainWindow::serialPortReadyRead_Slot()
         data =SerialPort->readAll();
         buff = QString(data.toHex(' '));
 
-        ui->reczone->appendPlainText(buff);
+        ui->reczone->insertPlainText(buff);
     }
     else
     {
         buff = QString(SerialPort->readAll());
-        ui->reczone->appendPlainText(buff);
+        ui->reczone->insertPlainText(buff);
     }
 }
 void MainWindow::on_openport_clicked()
@@ -221,10 +227,18 @@ void MainWindow::on_closeport_clicked()
 void MainWindow::on_senddata_clicked()
 {
     QDateTime SendTime ;
+
+    // 红色字体
+    QTextCharFormat fmt;// 文本格式
+    fmt.setForeground(Qt::red);
+    QTextCursor cursor =ui->reczone->textCursor();
+    cursor.mergeBlockCharFormat(fmt);
+    ui->reczone->mergeCurrentCharFormat(fmt);
+
     if(gshowtime == true)
     {
         SendTime = QDateTime::currentDateTime(); //获取当前时间
-        ui->reczone->appendPlainText("send  "+SendTime.toString());
+        ui->reczone->appendPlainText("send  "+SendTime.toString("yyyy-MM-dd hh:mm:ss.zzz")+"  ");
 
     }
 
@@ -244,7 +258,7 @@ void MainWindow::on_senddata_clicked()
     }
     else
     {
-        ui->reczone->appendPlainText(ui->sendzone->text().toLocal8Bit().data());
+        ui->reczone->insertPlainText(ui->sendzone->text().toLocal8Bit().data());
         SerialPort->write(ui->sendzone->text().toLocal8Bit().data());
     }
 
